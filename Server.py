@@ -10,8 +10,11 @@ import random
 import os
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-from image_classifier import classifyImage
+import json
+from image_classifier_CNN import classifyImage
+from image_classifier_pretrained_VGG16 import classifyImage as classifyImage2
 
+whichClassifierCNN=""
 app = Flask(__name__)
 CORS(app)  # Erlaube CORS von überall. Ändern im Productionmode
 
@@ -42,7 +45,16 @@ def upload_file():
     filename = secure_filename(file.filename)
     randomintfilename = str(random_number)+'_'+filename
     file.save('uploads/'+ randomintfilename)
-    answer = classifyImage('uploads/' + randomintfilename)
+    with open('config.json', 'r') as jfile:
+        data = json.load(jfile)
+        for item in data:
+            if item.get('use') == "True":  # Use get() with default value for safe access
+                whichClassifierCNN = item['name']
+                print("Selected classifier:", whichClassifierCNN)
+    if(whichClassifierCNN == "image_classifier_CNN"):
+        answer = classifyImage('uploads/' + randomintfilename)
+    elif(whichClassifierCNN == "image_classifier_pretrained_VGG16"):
+        answer = classifyImage2('uploads/' + randomintfilename)
     # nach der Ueberpruefung wieder loeschen
     if os.path.exists('uploads/' + randomintfilename):
         os.remove('uploads/' + randomintfilename)

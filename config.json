@@ -1,0 +1,2 @@
+[{"name":"image_classifier_CNN","use":"True"},
+{"name":"image_classifier_pretrained_VGG16","use":"False"}]

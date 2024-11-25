@@ -8,5 +8,6 @@ services:
       - "5000:5000"
     volumes:
       - ./uploads:/usr/src/app/uploads
+      - ./config.json:/usr/src/app/config.json
     environment:
       - FLASK_ENV=development
